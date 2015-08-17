@@ -1,0 +1,28 @@
+﻿{
+    "version": "1.0.0-*",
+    "description": "CMService.Test Console Application",
+    "authors": [ "FilipA" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
+
+    "dependencies": {
+        "CMService": "1.0.0-*",
+        "Entities": "1.0.0-*"
+    },
+
+    "commands": {
+        "CMService.Test": "CMService.Test"
+    },
+
+    "frameworks": {
+        "dnx451": {
+            "dependencies": {
+                "System.Collections": "4.0.10-beta-23019",
+                "System.Linq": "4.0.0-beta-23019",
+                "System.Threading": "4.0.10-beta-23019",
+                "Microsoft.CSharp": "4.0.0-beta-23019"
+            }
+        }
+    }
+}

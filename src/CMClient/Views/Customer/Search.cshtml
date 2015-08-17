@@ -1,0 +1,48 @@
+﻿@model CMClient.Models.Search
+
+<input type="hidden" value="@Model.ServiceURI" id="serviceURI" />
+
+<div class="row spacer">
+    <div class="col-sm-6">
+        <form id="searchForm" asp-controller="Customer" asp-action="Index" asp-route-returnurl="@ViewBag.ReturnUrl" method="post" role="form">
+            <div class="row spacer form-group">
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" asp-for="Query" />
+                    <span asp-validation-for="Query" class="text-danger"></span>
+                    <div class="spacer">
+                        <ul>
+                            @foreach (var result in Model.Result)
+                            {
+                                <li><a href="customer/edit/@result.Key">@result.Value</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button id="search" class="btn btn-default">Search</button>
+                    <button id="add" class="btn btn-default">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-6">
+        <div id="categoryChart"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div id="locationChart"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 spacer">
+        <h4>Filip Andersson, anderssonfilip@gmail.com</h4>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/highcharts/highcharts.js"></script>
+
+    <script src="~/js/search.js" asp-file-version="true"></script>
+}

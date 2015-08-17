@@ -1,0 +1,91 @@
+﻿@model Entities.Customer
+
+<div class="row spacer">
+    <div class="col-sm-12">
+        <a href="/">Back</a>
+    </div>
+</div>
+<div class="row spacer">
+    <div class="col-xs-12">
+        <h2>Customer Details</h2>
+    </div>
+</div>
+<form id="editForm" asp-controller="Customer" asp-action="Save" class="spacer">
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input type="text" class="form-control" name="Name" asp-for="Name" />
+            <label for="Name" class="text-danger error" hidden />
+        </div>
+        <div class="col-sm-3 form-group">
+            <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
+            <input type="date" class="form-control" asp-for="DateOfBirth" required />
+        </div>
+        <div class="col-sm-2">
+            <label asp-for="Gender" class="control-label"></label>
+            <input class="form-control" asp-for="Gender" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-2">
+            <label asp-for="HouseNumber" class="control-label">House #</label>
+            <input type="number" class="form-control" asp-for="HouseNumber" />
+        </div>
+        <div class="col-xs-4">
+            <label asp-for="AddressLine1" class="control-label">Address</label>
+            <input type="text" class="form-control" asp-for="AddressLine1" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <label asp-for="State" class="control-label"></label>
+            <input type="text" class="form-control" asp-for="State" />
+        </div>
+        <div class="col-sm-4">
+            <label asp-for="Country" class="control-label"></label>
+            <input type="text" class="form-control" asp-for="Country" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-2">
+            <label asp-for="Category" class="control-label"></label>
+            <input type="text" class="form-control" asp-for="Category" />
+        </div>
+    </div>
+    <div class="row spacer">
+        <div class="col-xs-12">
+            <input type="hidden" value="@Model.Id" name="Id" />
+            <button id="save" class="btn btn-default">Save</button>
+            <button id="delete" class="btn btn-danger">Delete</button>
+        </div>
+    </div>
+</form>
+<div class="row spacer">
+    <div class="col-xs-12">
+        <h3>Customer Updates</h3>
+    </div>
+</div>
+<div class="row spacer">
+    <div class="col-xs-4">
+        Update
+    </div>
+    <div class="col-xs-4">
+        Time
+    </div>
+</div>
+<div class="row">
+    @foreach (var update in Model.Updates)
+    {
+        <div class="col-xs-4">
+            @update.Type @Html.Encode("<br/>")
+        </div>
+        <div class="col-xs-4">
+            @update.Type @Html.Encode("<br/>")
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    <script src="~/js/edit.js" asp-file-version="true"></script>
+}

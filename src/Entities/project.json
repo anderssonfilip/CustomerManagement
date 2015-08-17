@@ -1,0 +1,21 @@
+﻿{
+    "version": "1.0.0-*",
+    "description": "Entities Class Library",
+    "authors": [ "filip" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
+
+    "dependencies": {
+        "System.Linq": "4.0.0",
+        "System.Threading.Tasks": "4.0.10"
+    },
+
+    "frameworks": {
+        "dnx451": {
+            "frameworkAssemblies": {
+                "System.ComponentModel.DataAnnotations": "4.0.0.0"
+            }
+        }
+    }
+}
