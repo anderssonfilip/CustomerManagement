@@ -1,8 +1,11 @@
 ﻿{
-    "Data": {
-        "DefaultConnection": {
-            "ConnectionString": "Server = localhost, 1433; Database = CM;User ID = WebsiteLaps; Password = WebsiteLaps"
-        },
-        "SeedDatabase": true
-    }
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Data Source=localhost;Integrated Security=True;Connect Timeout=15;Database=cm;"
+    },
+    "SeedDatabase": false
+  },
+  "Client": {
+    "URI": "http://localhost:53074"
+  }
 }

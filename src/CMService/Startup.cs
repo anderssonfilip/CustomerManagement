@@ -34,19 +34,18 @@ namespace CMService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<DbSetting>(Configuration.GetConfigurationSection("Data:DefaultConnection"));
+            services.Configure<ClientSetting>(Configuration.GetConfigurationSection("Client"));
 
             services.AddMvc();
+
         }
 
         // Configure is called after ConfigureServices is called.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //app.UseWelcomePage();
-
             app.UseMvc(routes =>
             {
-                 routes.MapRoute(name: "default", template: "{controller}/{action}/");
-
+                 routes.MapRoute(name: "default", template: "api/{controller}/{action}/");
             });
         }
     }

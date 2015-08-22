@@ -13,6 +13,7 @@ namespace CMService.Controllers
     /// <summary>
     /// Contains actions to search customers as well as basic actions on a customer
     /// </summary>
+    [Route("api/[controller]")]
     public class CustomerController : Controller
     {
         private readonly CustomerDbContext _customerDbContext;
@@ -43,24 +44,27 @@ namespace CMService.Controllers
         {
             var customer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
             var json = Json(customer);
+
+            Context.Response.Headers["Access-Control-Allow-Origin"] = "http://localhost";
+
             return json;
         }
 
         [HttpPost]
-        public void Post([FromBody]string customerName)
+        public void CreateOrUpdate([FromBody] Customer customer)
         {
-            if(string.IsNullOrEmpty(customerName)|| string.IsNullOrWhiteSpace(customerName))
+            if (!ModelState.IsValid)
             {
-                return;
+                Context.Response.StatusCode = 400;
             }
-
-            var customer = new Customer()
+            else
             {
-                Name = customerName
-            };
+                _customerDbContext.Customers.Add(customer);
+                _customerDbContext.SaveChangesAsync();
 
-            _customerDbContext.Customers.Add(customer);
-            _customerDbContext.SaveChangesAsync();
+                Context.Response.StatusCode = 201;
+                Context.Response.Headers["Location"] = Url.RouteUrl("Get", new { id = customer.Id }, Request.Scheme, Request.Host.ToUriComponent());
+            }
         }
 
         [HttpPut("{id:int}")]
@@ -138,25 +142,28 @@ namespace CMService.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public void Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
             var customer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
-
-            if (customer != null)
+            if (customer == null)
             {
-                var update = new CustomerUpdate
-                {
-                    Type = UpdateType.Remove.ToString(),
-                    Timestamp = DateTime.Now,
-                    Customer = customer
-                };
-
-                customer.Updates.Add(update);
-               // _customerDbContext.CustomerUpdates.Add(update);
-
-                _customerDbContext.SaveChangesAsync();
+                return HttpNotFound();
             }
+
+            var update = new CustomerUpdate
+            {
+                Type = UpdateType.Remove.ToString(),
+                Timestamp = DateTime.Now,
+                Customer = customer
+            };
+
+            customer.Updates.Add(update);
+            // _customerDbContext.CustomerUpdates.Add(update);
+
+            _customerDbContext.SaveChangesAsync();
+
+            return new HttpStatusCodeResult(204); // 201 No Content
         }
     }
 }

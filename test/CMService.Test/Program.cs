@@ -11,7 +11,7 @@ namespace CMService.Test
                 "http://localhost:52988/"
             );
 
-            testRunner.TestDelete();
+            testRunner.TestPost();
 
             Console.WriteLine("All tests completed");
             Console.ReadLine();

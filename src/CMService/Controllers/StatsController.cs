@@ -13,15 +13,19 @@ namespace CMService.Controllers
     public class StatsController : Controller
     {
         private readonly CustomerDbContext _customerDbContext;
+        private readonly string _accessControlAllowOriginURI;
 
-        public StatsController(IOptions<DbSetting> dbSettings)
+        public StatsController(IOptions<DbSetting> dbSettings, IOptions<ClientSetting> clientSetting)
         {
             _customerDbContext = new CustomerDbContext(dbSettings.Options.ConnectionString);
+            _accessControlAllowOriginURI = clientSetting.Options.URI;
         }
 
         [HttpGet]
         public IActionResult CategoryStats()
         {
+            Context.Response.Headers["Access-Control-Allow-Origin"] = _accessControlAllowOriginURI;
+
             var categories = QueryCategories().ToArray();
             return Json(categories);
         }
@@ -29,6 +33,8 @@ namespace CMService.Controllers
         [HttpGet]
         public IActionResult LocationStats()
         {
+            Context.Response.Headers["Access-Control-Allow-Origin"] = _accessControlAllowOriginURI;
+
             var locations = QueryLocations().ToArray();
             return Json(locations);
         }

@@ -25,9 +25,7 @@ namespace CMClient.Controllers
 
             if (!string.IsNullOrEmpty(search.Query))
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + search.Query);
-
-                request.ContentType = "application/json; charset=utf-8";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + "customer/" + search.Query);
 
                 using (WebResponse response = request.GetResponse())
                 {
@@ -44,9 +42,9 @@ namespace CMClient.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + id);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + "customer/" + id);
 
-            request.ContentType = "application/json; charset=utf-8";
+            request.ContentType = "text/json";
 
             using (WebResponse response = request.GetResponse())
             {
@@ -63,9 +61,6 @@ namespace CMClient.Controllers
         [HttpPost]
         public IActionResult Add(Search search)
         {
-            // Redirect to Search Page
-            return Redirect("Search");
-            
             // Create the Customer and show the Edit page with default values
 
             var request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI);
@@ -90,6 +85,8 @@ namespace CMClient.Controllers
         [HttpPost]
         public IActionResult Save(Customer customer)
         {
+            var loc = Context.Response.Headers["Location"];
+
             WebRequest request;
 
             if (customer.Id == 0)
@@ -116,7 +113,7 @@ namespace CMClient.Controllers
         [HttpPost]
         public IActionResult Delete(Customer customer)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + customer.Id);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + "customer/" + customer.Id);
             request.Method = "DELETE";
 
             using (WebResponse response = request.GetResponse())

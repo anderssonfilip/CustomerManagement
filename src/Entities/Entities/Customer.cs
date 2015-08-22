@@ -12,6 +12,7 @@ namespace Entities
             Updates = new List<CustomerUpdate>();
         }
 
+        [Key]
         public int Id { get; set; }
 
         public string Name { get; set; }

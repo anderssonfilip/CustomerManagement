@@ -1,6 +1,8 @@
 ﻿using CMService.DAL;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
+using System.Text;
 
 namespace CMService.Test
 {
@@ -40,6 +42,30 @@ namespace CMService.Test
         public void TestPost()
         {
 
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(_serviceURI);
+
+            webRequest.Method = "POST";
+
+        
+            using (var client = new WebClient())
+            {
+                
+                var values = new NameValueCollection()
+                                 {
+                                    {"Name", "test"},
+                                    {"Gender", "test"},
+                                    {"HouseNumber", "1"},
+                                    {"AddressLine1", "test" },
+                                    {"State", "test" },
+                                    {"Country", "test" },
+                                    {"Category", "test" },
+                                    {"DateOfBirth", "2015-01-01" }
+                                 };
+
+                var bytes = client.UploadValues(_serviceURI, values);
+
+                var result = Encoding.UTF8.GetString(bytes);
+            }
         }
 
         /// <summary>
