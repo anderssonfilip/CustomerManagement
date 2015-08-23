@@ -18,7 +18,7 @@ namespace CMService
             configBuilder.AddEnvironmentVariables();
             Configuration = configBuilder.Build();
 
-            if(Boolean.Parse(Configuration["Data:SeedDatabase"])){
+            if (bool.Parse(Configuration["Data:SeedDatabase"])){
                 SeedCustomers.Seed(Configuration["Data:DefaultConnection:ConnectionString"]);
             }
         }

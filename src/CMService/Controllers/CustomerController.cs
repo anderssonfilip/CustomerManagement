@@ -23,6 +23,15 @@ namespace CMService.Controllers
             _customerDbContext = new CustomerDbContext(dbSettings.Options.ConnectionString);
         }
 
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
+        {
+            var customer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
+            var json = Json(customer);
+
+            return json;
+        }
+
         [HttpGet("{customerName}")]
         public IEnumerable<KeyValuePair<int, string>> Search(string customerName)
         {
@@ -39,18 +48,7 @@ namespace CMService.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
-        {
-            var customer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
-            var json = Json(customer);
-
-            Context.Response.Headers["Access-Control-Allow-Origin"] = "http://localhost";
-
-            return json;
-        }
-
-        [HttpPost]
+        [AcceptVerbs("POST", "PUT")]
         public void CreateOrUpdate([FromBody] Customer customer)
         {
             if (!ModelState.IsValid)
@@ -59,87 +57,94 @@ namespace CMService.Controllers
             }
             else
             {
-                _customerDbContext.Customers.Add(customer);
-                _customerDbContext.SaveChangesAsync();
+                if (customer.Id == 0)
+                {
+                    customer.Updates.Add(new CustomerUpdate
+                    {
+                        Type = UpdateType.Add.ToString(),
+                        Timestamp = DateTime.Now,
+                        Customer = customer
+                    });
 
-                Context.Response.StatusCode = 201;
-                Context.Response.Headers["Location"] = Url.RouteUrl("Get", new { id = customer.Id }, Request.Scheme, Request.Host.ToUriComponent());
+                    _customerDbContext.Customers.Add(customer);
+                    _customerDbContext.SaveChangesAsync();
+
+                    Context.Response.StatusCode = 201;
+                    Context.Response.Headers["Location"] = Url.RouteUrl("Get", new { id = customer.Id }, Request.Scheme, Request.Host.ToUriComponent());
+                }
+                else
+                {
+                    // can I do this?
+                    var dbCustomer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == customer.Id);
+                    TryUpdateModelAsync(dbCustomer);
+                    _customerDbContext.SaveChangesAsync();
+                   // Update(customer.Id, customer);
+                }
             }
         }
 
-        [HttpPut("{id:int}")]
-        public void Put(int id, [FromBody]Customer customer)
+
+        private void Update(int id, Customer customer)
         {
             var dbCustomer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
 
             if (dbCustomer == null)
-            {
-                customer.Updates.Add(new CustomerUpdate
-                {
-                    Type = UpdateType.Add.ToString(),
-                    Timestamp = DateTime.Now,
-                    Customer = customer
-                });
+                return;
 
-                _customerDbContext.Customers.Add(customer);
+            var modified = false;
+
+            if (dbCustomer.Name != customer.Name)
+            {
+                dbCustomer.Name = customer.Name;
+                modified = true;
+            }
+            if (dbCustomer.Gender != customer.Gender)
+            {
+                dbCustomer.Gender = customer.Gender;
+                modified = true;
+            }
+            if (dbCustomer.HouseNumber != customer.HouseNumber)
+            {
+                dbCustomer.HouseNumber = customer.HouseNumber;
+                modified = true;
+            }
+            if (dbCustomer.AddressLine1 != customer.AddressLine1)
+            {
+                dbCustomer.AddressLine1 = customer.AddressLine1;
+                modified = true;
+            }
+            if (dbCustomer.State != customer.State)
+            {
+                dbCustomer.State = customer.State;
+                modified = true;
+            }
+            if (dbCustomer.Country != customer.Country)
+            {
+                dbCustomer.Country = customer.Country;
+                modified = true;
+            }
+            if (dbCustomer.Category != customer.Category)
+            {
+                dbCustomer.Category = customer.Category;
+                modified = true;
+            }
+            if (dbCustomer.DateOfBirth != customer.DateOfBirth)
+            {
+                dbCustomer.DateOfBirth = customer.DateOfBirth;
+                modified = true;
+            }
+
+            if (modified)
+            {
+                dbCustomer.Updates.Add(new CustomerUpdate
+                {
+                    Type = UpdateType.Update.ToString(),
+                    Timestamp = DateTime.Now,
+                    Customer = dbCustomer
+                });
                 _customerDbContext.SaveChangesAsync();
             }
-            else
-            {
-                var modified = false;
 
-                if (dbCustomer.Name != customer.Name)
-                {
-                    dbCustomer.Name = customer.Name;
-                    modified = true;
-                }
-                if (dbCustomer.Gender != customer.Gender)
-                {
-                    dbCustomer.Gender = customer.Gender;
-                    modified = true;
-                }
-                if (dbCustomer.HouseNumber != customer.HouseNumber)
-                {
-                    dbCustomer.HouseNumber = customer.HouseNumber;
-                    modified = true;
-                }
-                if (dbCustomer.AddressLine1 != customer.AddressLine1)
-                {
-                    dbCustomer.AddressLine1 = customer.AddressLine1;
-                    modified = true;
-                }
-                if (dbCustomer.State != customer.State)
-                {
-                    dbCustomer.State = customer.State;
-                    modified = true;
-                }
-                if (dbCustomer.Country != customer.Country)
-                {
-                    dbCustomer.Country = customer.Country;
-                    modified = true;
-                }
-                if (dbCustomer.Category != customer.Category)
-                {
-                    dbCustomer.Category = customer.Category;
-                    modified = true;
-                }
-                if (dbCustomer.DateOfBirth != customer.DateOfBirth)
-                {
-                    dbCustomer.DateOfBirth = customer.DateOfBirth;
-                    modified = true;
-                }
-
-                if (modified)
-                {
-                    dbCustomer.Updates.Add(new CustomerUpdate
-                    {
-                        Type = UpdateType.Update.ToString(),
-                        Timestamp = DateTime.Now,
-                        Customer = dbCustomer
-                    });
-                    _customerDbContext.SaveChangesAsync();
-                }
-            }
         }
 
         [HttpDelete("{id}")]
