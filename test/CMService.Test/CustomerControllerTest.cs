@@ -1,5 +1,6 @@
 ﻿using CMService.DAL;
 using Entities;
+using Microsoft.Data.Entity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -31,8 +32,8 @@ namespace CMService.Test
             }
 
             var request = WebRequest.Create(_serviceURI + "customer/" + id);
-            var response = request.GetResponse();
 
+            using (var response = request.GetResponse())
             using (var reader = new StreamReader(response.GetResponseStream()))
             {
                 var received = reader.ReadToEnd();
@@ -43,7 +44,8 @@ namespace CMService.Test
         public bool Search()
         {
             var request = WebRequest.Create(_serviceURI + "customer/" + "customerName");
-            var response = request.GetResponse();
+
+            using (var response = request.GetResponse())
             using (var reader = new StreamReader(response.GetResponseStream()))
             {
                 var received = reader.ReadToEnd();
@@ -58,12 +60,13 @@ namespace CMService.Test
             int id;
             using (var customerDbContext = new CustomerDbContext(_connectionString))
             {
-                id = customerDbContext.Customers.Max(c => c.Id) + 1;
+                id = customerDbContext.Customers.Max(c => c.Id);
             }
 
             var request = WebRequest.Create(_serviceURI + "customer/");
             request.Method = "POST";
             request.ContentType = "text/json";
+
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
                 streamWriter.Write(JsonConvert.SerializeObject(new Customer
@@ -84,10 +87,11 @@ namespace CMService.Test
 
             using (var customerDbContext = new CustomerDbContext(_connectionString))
             {
-                var customer = customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
+                var customer = customerDbContext.Customers.Include(c => c.CustomerUpdates).FirstOrDefault(c => c.Id > id);
 
-                var hasUpdate = customer.Updates.Last().Type == UpdateType.Add.ToString();
+                var hasUpdate = customer.CustomerUpdates.Last().Type == UpdateType.Add.ToString();
 
+                customerDbContext.CustomerUpdates.RemoveRange(customer.CustomerUpdates);
                 customerDbContext.Customers.Remove(customer);
                 customerDbContext.SaveChanges();
 
@@ -118,10 +122,10 @@ namespace CMService.Test
 
             using (var customerDbContext = new CustomerDbContext(_connectionString))
             {
-                customer = customerDbContext.Customers.First();
+                customer = customerDbContext.Customers.Include(c => c.CustomerUpdates).First();
 
                 return name.Equals(new string(customer.Name.Reverse().ToArray())) &&
-                       customer.Updates.Last().Type == UpdateType.Update.ToString();
+                       customer.CustomerUpdates.Last().Type == UpdateType.Update.ToString();
             }
         }
 
@@ -153,10 +157,11 @@ namespace CMService.Test
 
             using (var customerDbContext = new CustomerDbContext(_connectionString))
             {
-                var customer = customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
+                var customer = customerDbContext.Customers.Include(c => c.CustomerUpdates).FirstOrDefault(c => c.Id == id);
 
-                var hasUpdate = customer.Updates.Last().Type == UpdateType.Remove.ToString();
+                var hasUpdate = customer.CustomerUpdates.Last().Type == UpdateType.Remove.ToString();
 
+                customerDbContext.CustomerUpdates.RemoveRange(customer.CustomerUpdates);
                 customerDbContext.Customers.Remove(customer);
                 customerDbContext.SaveChanges();
 

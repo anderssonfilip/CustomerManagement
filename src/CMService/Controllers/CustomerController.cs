@@ -3,6 +3,7 @@ using CMService.Search;
 using CMService.Settings;
 using Entities;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Data.Entity;
 using Microsoft.Framework.OptionsModel;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,12 @@ namespace CMService.Controllers
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            var customer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == id);
+            // TODO: including CustomerUpdates will throw:
+            // Newtonsoft.Json.JsonSerializationException
+            // Self referencing loop detected for property 'Customer' with type 'Entities.Customer'.Path 'CustomerUpdates[0]'
+            // at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.CheckForCircularReference(JsonWriter writer, Object value, JsonProperty property, JsonContract contract, JsonContainerContract containerContract, JsonProperty containerProperty)
+
+            var customer = _customerDbContext.Customers/*.Include(c => c.CustomerUpdates)*/.FirstOrDefault(c => c.Id == id);
             var json = Json(customer);
 
             return json;
@@ -59,14 +65,14 @@ namespace CMService.Controllers
             {
                 if (customer.Id == 0)
                 {
-                    customer.Updates.Add(new CustomerUpdate
+                    _customerDbContext.Customers.Add(customer);
+                    _customerDbContext.CustomerUpdates.Add(new CustomerUpdate
                     {
                         Type = UpdateType.Add.ToString(),
                         Timestamp = DateTime.Now,
                         Customer = customer
                     });
 
-                    _customerDbContext.Customers.Add(customer);
                     _customerDbContext.SaveChangesAsync();
 
                     Context.Response.StatusCode = 201;
@@ -74,11 +80,17 @@ namespace CMService.Controllers
                 }
                 else
                 {
-                    // can I do this?
-                    var dbCustomer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == customer.Id);
-                    TryUpdateModelAsync(dbCustomer);
+                    //var dbCustomer = _customerDbContext.Customers.FirstOrDefault(c => c.Id == customer.Id);
+                    TryUpdateModelAsync(customer);
+
+                    _customerDbContext.CustomerUpdates.Add(new CustomerUpdate
+                    {
+                        Type = UpdateType.Update.ToString(),
+                        Timestamp = DateTime.Now,
+                        Customer = customer
+                    });
+
                     _customerDbContext.SaveChangesAsync();
-                   // Update(customer.Id, customer);
                 }
             }
         }
@@ -136,12 +148,13 @@ namespace CMService.Controllers
 
             if (modified)
             {
-                dbCustomer.Updates.Add(new CustomerUpdate
+                dbCustomer.CustomerUpdates.Add(new CustomerUpdate
                 {
                     Type = UpdateType.Update.ToString(),
                     Timestamp = DateTime.Now,
                     Customer = dbCustomer
                 });
+
                 _customerDbContext.SaveChangesAsync();
             }
 
@@ -156,15 +169,12 @@ namespace CMService.Controllers
                 return HttpNotFound();
             }
 
-            var update = new CustomerUpdate
+            _customerDbContext.CustomerUpdates.Add(new CustomerUpdate
             {
                 Type = UpdateType.Remove.ToString(),
                 Timestamp = DateTime.Now,
                 Customer = customer
-            };
-
-            customer.Updates.Add(update);
-            // _customerDbContext.CustomerUpdates.Add(update);
+            });
 
             _customerDbContext.SaveChangesAsync();
 

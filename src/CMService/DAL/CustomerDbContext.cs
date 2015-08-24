@@ -21,6 +21,10 @@ namespace CMService.DAL
     {
         private readonly string _connectionString;
 
+        public CustomerDbContext()
+        {
+        }
+
         public CustomerDbContext(string connectionString)
         {
             _connectionString = connectionString;
@@ -33,24 +37,28 @@ namespace CMService.DAL
 
         protected override void OnConfiguring(EntityOptionsBuilder options)
         {
-            options.UseSqlServer(_connectionString);
+            if (!string.IsNullOrEmpty(_connectionString))
+                options.UseSqlServer(_connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            //modelBuilder.Entity<Customer>(c =>
+            //{
+            //    c.Property(e => e.Id).ForSqlServer().UseIdentity();
+            //});
+
+            //modelBuilder.Entity<CustomerUpdate>(c =>
+            //{
+            //    c.Property(e => e.Id).ForSqlServer().UseIdentity();
+            //});
+
             //modelBuilder.Entity<CustomerUpdate>(b => b.Reference("Customer")
             //        .InverseCollection()
             //        .ForeignKey("CustomerId"));
 
-            //modelBuilder.Entity<Customer>(b =>
-            //{
-            //    b.O(d => d.Posts, p => p.Blog)
-            //        .ForeignKey(d => d.BlogId)
-            //        .Key(d => d.Id)
-            //        .Required();
-            //});
 
             //var customer = modelBuilder.Entity<Customer>().Table("Customer");
             //customer.Key(c => c.Id);

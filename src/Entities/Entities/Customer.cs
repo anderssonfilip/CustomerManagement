@@ -9,7 +9,7 @@ namespace Entities
     {
         public Customer()
         {
-            Updates = new List<CustomerUpdate>();
+            CustomerUpdates = new List<CustomerUpdate>();
         }
 
         [Key]
@@ -32,7 +32,7 @@ namespace Entities
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime DateOfBirth { get; set; }
 
-        public ICollection<CustomerUpdate> Updates { get; set; }
+        public ICollection<CustomerUpdate> CustomerUpdates { get; set; }
 
         //public bool IsDeleted()
         //{

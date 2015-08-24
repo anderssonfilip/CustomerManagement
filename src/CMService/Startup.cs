@@ -1,7 +1,9 @@
-﻿using CMService.Migrations;
+﻿using CMService.DAL;
+using CMService.Migrations;
 using CMService.Settings;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.Data.Entity;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Runtime;
@@ -34,6 +36,10 @@ namespace CMService
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<DbSetting>(Configuration.GetConfigurationSection("Data:DefaultConnection"));
+
+            services.AddEntityFramework().AddSqlServer().AddDbContext<CustomerDbContext>(
+                options => options.UseSqlServer(Configuration.Get("Data:DefaultConnection:ConnectionString")));
+
             services.Configure<ClientSetting>(Configuration.GetConfigurationSection("Client"));
 
             services.AddMvc();

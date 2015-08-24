@@ -1,6 +1,6 @@
 ﻿using Entities;
 using System;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities
 {
@@ -8,6 +8,7 @@ namespace Entities
 
     public class CustomerUpdate
     {
+        [Key]
         public int Id { get; set; }
 
         public string Type { get; set; }
@@ -16,7 +17,7 @@ namespace Entities
 
         // Relationships
 
-        public int CustomerId { get; set; }
+        [Required]
         public virtual Customer Customer { get; set; }
 
     }
