@@ -44,6 +44,7 @@ namespace CMService
 
             services.AddMvc();
 
+            services.AddSwagger();
         }
 
         // Configure is called after ConfigureServices is called.
@@ -53,6 +54,9 @@ namespace CMService
             {
                  routes.MapRoute(name: "default", template: "api/{controller}/{action}/");
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUi();
         }
     }
 }

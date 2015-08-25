@@ -313,6 +313,23 @@
           "lib/dnx451/Microsoft.AspNet.FileProviders.Abstractions.dll": {}
         }
       },
+      "Microsoft.AspNet.FileProviders.Embedded/1.0.0-beta5": {
+        "dependencies": {
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-beta5"
+        },
+        "frameworkAssemblies": [
+          "mscorlib",
+          "System",
+          "System.Core",
+          "Microsoft.CSharp"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.FileProviders.Embedded.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.FileProviders.Embedded.dll": {}
+        }
+      },
       "Microsoft.AspNet.FileProviders.Physical/1.0.0-beta5": {
         "dependencies": {
           "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-beta5"
@@ -731,6 +748,27 @@
         },
         "runtime": {
           "lib/dnx451/Microsoft.AspNet.Server.WebListener.dll": {}
+        }
+      },
+      "Microsoft.AspNet.StaticFiles/1.0.0-beta5": {
+        "dependencies": {
+          "Microsoft.AspNet.Http.Extensions": "1.0.0-beta5",
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-beta5",
+          "Microsoft.AspNet.Hosting.Abstractions": "1.0.0-beta5",
+          "Microsoft.Framework.Logging.Abstractions": "1.0.0-beta5",
+          "Microsoft.Framework.WebEncoders": "1.0.0-beta5"
+        },
+        "frameworkAssemblies": [
+          "mscorlib",
+          "System",
+          "System.Core",
+          "Microsoft.CSharp"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.StaticFiles.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.StaticFiles.dll": {}
         }
       },
       "Microsoft.AspNet.WebUtilities/1.0.0-beta5": {
@@ -1220,6 +1258,25 @@
           "lib/portable-net45+win+wpa81+wp80/Remotion.Linq.dll": {}
         }
       },
+      "Swashbuckle/6.0.0-beta5": {
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "6.0.0-beta5",
+          "Microsoft.AspNet.StaticFiles": "1.0.0-beta5",
+          "Microsoft.AspNet.FileProviders.Embedded": "1.0.0-beta5"
+        },
+        "frameworkAssemblies": [
+          "mscorlib",
+          "System",
+          "System.Core",
+          "Microsoft.CSharp"
+        ],
+        "compile": {
+          "lib/dnx451/Swashbuckle.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Swashbuckle.dll": {}
+        }
+      },
       "System.Collections/4.0.10-beta-23019": {
         "dependencies": {
           "System.Runtime": "4.0.0-beta-23019"
@@ -1504,6 +1561,21 @@
         "lib/dnxcore50/Microsoft.AspNet.FileProviders.Abstractions.xml",
         "lib/net45/Microsoft.AspNet.FileProviders.Abstractions.dll",
         "lib/net45/Microsoft.AspNet.FileProviders.Abstractions.xml"
+      ]
+    },
+    "Microsoft.AspNet.FileProviders.Embedded/1.0.0-beta5": {
+      "serviceable": true,
+      "sha512": "cqqQrYFzEN5DHc9u6xPnLL4d8m1j1K6uSYnlXoOcwaOMUFYaH3jyJ8C44/fuDHqGmMzOL2TUOpLC8OnJxpEwNg==",
+      "files": [
+        "Microsoft.AspNet.FileProviders.Embedded.1.0.0-beta5.nupkg",
+        "Microsoft.AspNet.FileProviders.Embedded.1.0.0-beta5.nupkg.sha512",
+        "Microsoft.AspNet.FileProviders.Embedded.nuspec",
+        "lib/dnx451/Microsoft.AspNet.FileProviders.Embedded.dll",
+        "lib/dnx451/Microsoft.AspNet.FileProviders.Embedded.xml",
+        "lib/dnxcore50/Microsoft.AspNet.FileProviders.Embedded.dll",
+        "lib/dnxcore50/Microsoft.AspNet.FileProviders.Embedded.xml",
+        "lib/net45/Microsoft.AspNet.FileProviders.Embedded.dll",
+        "lib/net45/Microsoft.AspNet.FileProviders.Embedded.xml"
       ]
     },
     "Microsoft.AspNet.FileProviders.Physical/1.0.0-beta5": {
@@ -1803,6 +1875,19 @@
         "lib/dnx451/Microsoft.AspNet.Server.WebListener.xml",
         "lib/dnxcore50/Microsoft.AspNet.Server.WebListener.dll",
         "lib/dnxcore50/Microsoft.AspNet.Server.WebListener.xml"
+      ]
+    },
+    "Microsoft.AspNet.StaticFiles/1.0.0-beta5": {
+      "serviceable": true,
+      "sha512": "edTL0IZMHl6KviHN/bgPyWMpP+oVVOiC4ylNjXxgMFy12rlGTry9Dk1L1iXxTajS2J0auj4HKKD1kM6kr2czLw==",
+      "files": [
+        "Microsoft.AspNet.StaticFiles.1.0.0-beta5.nupkg",
+        "Microsoft.AspNet.StaticFiles.1.0.0-beta5.nupkg.sha512",
+        "Microsoft.AspNet.StaticFiles.nuspec",
+        "lib/dnx451/Microsoft.AspNet.StaticFiles.dll",
+        "lib/dnx451/Microsoft.AspNet.StaticFiles.xml",
+        "lib/dnxcore50/Microsoft.AspNet.StaticFiles.dll",
+        "lib/dnxcore50/Microsoft.AspNet.StaticFiles.xml"
       ]
     },
     "Microsoft.AspNet.WebUtilities/1.0.0-beta5": {
@@ -2268,6 +2353,18 @@
         "Remotion.Linq.nuspec",
         "lib/portable-net45+win+wpa81+wp80/Remotion.Linq.dll",
         "lib/portable-net45+win+wpa81+wp80/Remotion.Linq.xml"
+      ]
+    },
+    "Swashbuckle/6.0.0-beta5": {
+      "sha512": "lESpalXnPgF+qh8GYvF8tx41d5d6Wugz62QS3eh/zf6OvOZESNSuJC3WJ3Uk+aOrPJ1PRP5Re+gZYUIkjJKuYg==",
+      "files": [
+        "Swashbuckle.6.0.0-beta5.nupkg",
+        "Swashbuckle.6.0.0-beta5.nupkg.sha512",
+        "Swashbuckle.nuspec",
+        "lib/dnx451/Swashbuckle.dll",
+        "lib/dnx451/Swashbuckle.xml",
+        "lib/dnxcore50/Swashbuckle.dll",
+        "lib/dnxcore50/Swashbuckle.xml"
       ]
     },
     "System.Collections/4.0.10-beta-23019": {

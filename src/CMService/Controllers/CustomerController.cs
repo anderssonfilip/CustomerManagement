@@ -14,7 +14,7 @@ namespace CMService.Controllers
     /// <summary>
     /// Contains actions to search customers as well as basic actions on a customer
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class CustomerController : Controller
     {
         private readonly CustomerDbContext _customerDbContext;

@@ -4,7 +4,7 @@
     var serviceURI = $("input#serviceURI").val();
 
     $.ajax({
-        url: serviceURI + "stats/categorystats", success: function (result) {
+        url: serviceURI + "stats/categories", success: function (result) {
 
             $('#categoryChart').highcharts({
                 chart: {
@@ -30,7 +30,7 @@
     });
 
     $.ajax({
-        url: serviceURI + "stats/locationstats", success: function (result) {
+        url: serviceURI + "stats/locations", success: function (result) {
 
             $('#locationChart').highcharts({
                 chart: {

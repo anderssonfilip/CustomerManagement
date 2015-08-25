@@ -10,6 +10,7 @@ namespace CMService.Controllers
     /// <summary>
     /// Contains Actions to get Statistics on the Customer dataset
     /// </summary>
+    [Route("api/[controller]/")]
     public class StatsController : Controller
     {
         private readonly CustomerDbContext _customerDbContext;
@@ -22,6 +23,7 @@ namespace CMService.Controllers
         }
 
         [HttpGet]
+        [Route("Categories")]
         public IActionResult CategoryStats()
         {
             Context.Response.Headers["Access-Control-Allow-Origin"] = _accessControlAllowOriginURI;
@@ -31,6 +33,7 @@ namespace CMService.Controllers
         }
 
         [HttpGet]
+        [Route("Locations")]
         public IActionResult LocationStats()
         {
             Context.Response.Headers["Access-Control-Allow-Origin"] = _accessControlAllowOriginURI;
