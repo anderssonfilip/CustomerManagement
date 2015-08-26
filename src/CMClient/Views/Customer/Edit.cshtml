@@ -27,11 +27,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-2">
+        <div class="col-sm-2">
             <label asp-for="HouseNumber" class="control-label">House #</label>
             <input type="number" class="form-control" asp-for="HouseNumber" />
         </div>
-        <div class="col-xs-4">
+        <div class="col-sm-4">
             <label asp-for="AddressLine1" class="control-label">Address</label>
             <input type="text" class="form-control" asp-for="AddressLine1" />
         </div>
@@ -49,12 +49,12 @@
     <div class="row">
         <div class="col-xs-2">
             <label asp-for="Category" class="control-label"></label>
-            <input type="text" class="form-control" asp-for="Category" />
+            <input type="text" class="form-control" asp-for="Category"/>
         </div>
     </div>
     <div class="row spacer">
         <div class="col-xs-12">
-            <input type="hidden" value="@Model.Id" name="Id" />
+            <input type="hidden" value="@Model.Id" name="Id" />@* <-- Id should be removed from view model*@
             <button id="save" class="btn btn-default">Save</button>
             <button id="delete" class="btn btn-danger">Delete</button>
         </div>
@@ -74,7 +74,7 @@
     </div>
 </div>
 <div class="row">
-    @foreach (var update in Model.Updates)
+    @foreach (var update in Model.CustomerUpdates)
     {
         <div class="col-xs-4">
             @update.Type @Html.Encode("<br/>")

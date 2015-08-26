@@ -29,19 +29,15 @@ namespace Entities
 
         public string Category { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
 
         public ICollection<CustomerUpdate> CustomerUpdates { get; set; }
 
-        //public bool IsDeleted()
-        //{
-        //    if (Updates == null)
-        //    {
-        //        return false;
-        //    }
-        //    return (Updates.Any(u => u.Type == UpdateType.Remove));
-        //}
+        public bool IsDeleted()
+        {
+            return CustomerUpdates == null ? false : (CustomerUpdates.Any(u => u.Type == UpdateType.Remove.ToString()));
+        }
     }
 }
 

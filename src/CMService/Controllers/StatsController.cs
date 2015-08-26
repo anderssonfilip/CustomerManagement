@@ -1,5 +1,7 @@
 ﻿using CMService.DAL;
+using CMService.Models;
 using CMService.Settings;
+using Entities;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.OptionsModel;
 using System.Collections.Generic;
@@ -13,12 +15,12 @@ namespace CMService.Controllers
     [Route("api/[controller]/")]
     public class StatsController : Controller
     {
-        private readonly CustomerDbContext _customerDbContext;
+        private readonly IRepository<Customer> _customerRespository;
         private readonly string _accessControlAllowOriginURI;
 
-        public StatsController(IOptions<DbSetting> dbSettings, IOptions<ClientSetting> clientSetting)
+        public StatsController(IRepository<Customer> customerRepository, IOptions<ClientSetting> clientSetting)
         {
-            _customerDbContext = new CustomerDbContext(dbSettings.Options.ConnectionString);
+            _customerRespository = customerRepository;
             _accessControlAllowOriginURI = clientSetting.Options.URI;
         }
 
@@ -44,7 +46,7 @@ namespace CMService.Controllers
 
         private IEnumerable<object> QueryCategories()
         {
-            foreach (var category in _customerDbContext.Customers.GroupBy(c => c.Category))
+            foreach (var category in _customerRespository.All.GroupBy(c => c.Category))
             {
                 yield return new { name = category.Key, y = category.Count() };
             }
@@ -52,7 +54,7 @@ namespace CMService.Controllers
 
         private IEnumerable<object> QueryLocations()
         {
-            foreach (var state in _customerDbContext.Customers.GroupBy(c => c.State))
+            foreach (var state in _customerRespository.All.GroupBy(c => c.State))
             {
                 yield return new { name = state.Key, y = state.Count() };
             }

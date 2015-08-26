@@ -5,7 +5,7 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using System;
 
-namespace CMService.DAL
+namespace CMService.Models
 {
     public static class DbContextExtensions
     {

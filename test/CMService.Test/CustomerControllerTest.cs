@@ -1,4 +1,5 @@
 ﻿using CMService.DAL;
+using CMService.Models;
 using Entities;
 using Microsoft.Data.Entity;
 using Newtonsoft.Json;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 
 namespace CMService.Test
 {
@@ -85,6 +87,8 @@ namespace CMService.Test
 
             request.GetResponse();
 
+            Thread.Sleep(200); // wait for async persist
+
             using (var customerDbContext = new CustomerDbContext(_connectionString))
             {
                 var customer = customerDbContext.Customers.Include(c => c.CustomerUpdates).FirstOrDefault(c => c.Id > id);
@@ -119,6 +123,8 @@ namespace CMService.Test
             }
 
             request.GetResponse();
+
+            Thread.Sleep(200); // wait for async persist
 
             using (var customerDbContext = new CustomerDbContext(_connectionString))
             {

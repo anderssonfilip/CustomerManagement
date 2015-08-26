@@ -1,4 +1,4 @@
-﻿using CMService.DAL;
+﻿using CMService.Models;
 using CMService.Migrations;
 using CMService.Settings;
 using Microsoft.AspNet.Builder;
@@ -8,6 +8,8 @@ using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Runtime;
 using System;
+using CMService.DAL;
+using Entities;
 
 namespace CMService
 {
@@ -39,6 +41,8 @@ namespace CMService
 
             services.AddEntityFramework().AddSqlServer().AddDbContext<CustomerDbContext>(
                 options => options.UseSqlServer(Configuration.Get("Data:DefaultConnection:ConnectionString")));
+
+            services.AddScoped<IRepository<Customer>, CustomerRepository>();
 
             services.Configure<ClientSetting>(Configuration.GetConfigurationSection("Client"));
 

@@ -2,7 +2,7 @@ using System;
 using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Metadata;
 using Microsoft.Data.Entity.Relational.Migrations.Infrastructure;
-using CMService.DAL;
+using CMService.Models;
 
 namespace CMService.Migrations
 {
