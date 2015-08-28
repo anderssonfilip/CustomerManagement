@@ -80,26 +80,25 @@ namespace CMClient.Controllers
                     sw.Write(JsonConvert.SerializeObject(customer));
             }
 
-
-
             using (var response = request.GetResponse())
-            using (var streamReader = new StreamReader(response.GetResponseStream()))
             {
-                var result = streamReader.ReadToEnd();
-                var customer = JsonConvert.DeserializeObject<Customer>(result);
-
-                return Redirect("/customer/edit/" + customer.Id);
+                var loc = response.Headers["Location"];
+                return RedirectToAction("Edit", new { id = loc.Substring(loc.LastIndexOf('/') + 1) });
             }
         }
 
         [HttpPost]
         public IActionResult Save(Customer customer)
         {
-            var loc = Context.Response.Headers["Location"];
+            if (customer.Id == 0)
+            {
+                var referer = Context.Request.Headers["Referer"];
+                customer.Id = int.Parse(referer.Substring(referer.LastIndexOf('/') + 1));
+            }
 
             var request = WebRequest.Create(_serviceSetting.URI + "customer/");
             request.ContentType = "text/json";
-            request.Method = customer.Id == 0 ? "POST" : "PUT";
+            request.Method = "PUT";
 
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
@@ -108,10 +107,9 @@ namespace CMClient.Controllers
 
             using (var response = request.GetResponse())
             {
-
+                var loc = response.Headers["Location"];
+                return RedirectToAction("Edit", new { id = loc.Substring(loc.LastIndexOf('/') + 1) });
             }
-
-            return RedirectToAction("Search");
         }
 
         [HttpPost]

@@ -7,12 +7,15 @@ namespace CMService.DAL
     {
         IQueryable<T> All { get; }
 
+        int Add(T item);
         Task<int> AddAsync(T item);
-
+        
+        int Update(T item);
         Task<int> UpdateAsync(T item);
 
-        T GetById(int id);
+        T Get(int id);
 
-        Task<int> DeleteAsync(int id);
+        int Delete(int id);
+        Task<int> DeleteAsync(T item);
     }
 }

@@ -17,6 +17,12 @@ namespace CMService.Migrations
 
             using (var customerDbContext = new CustomerDbContext(connectionString))
             {
+                customerDbContext.CustomerUpdates.RemoveRange(customerDbContext.CustomerUpdates);
+                customerDbContext.SaveChanges();
+
+                customerDbContext.Customers.RemoveRange(customerDbContext.Customers);
+                customerDbContext.SaveChanges();
+
                 using (var response = request.GetResponse())
                 using (var sr = new StreamReader(response.GetResponseStream()))
                 {
@@ -50,17 +56,9 @@ namespace CMService.Migrations
                             Timestamp = DateTime.Now,
                             Type = UpdateType.Add.ToString()
                         });
-
-
-
                     }
+
                     customerDbContext.SaveChanges();
-
-                    //foreach (var customer in customerDbContext.Customers)
-                    //{
-
-                    //}
-                    //customerDbContext.SaveChanges();
                 }
             }
         }

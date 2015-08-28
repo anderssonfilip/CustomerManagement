@@ -20,7 +20,7 @@ namespace CMService.Controllers
             _customerRespository = customerRepository;
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "Get")]
         public IActionResult Get(int id)
         {
             // TODO: including CustomerUpdates will throw:
@@ -59,31 +59,24 @@ namespace CMService.Controllers
             }
             else
             {
-                if (customer.Id == 0)
-                {
-                    _customerRespository.AddAsync(customer);
-                }
-                else
-                {
-                    _customerRespository.UpdateAsync(customer);
-                }
+                var url = customer.Id == 0 ? _customerRespository.Add(customer) : _customerRespository.Update(customer);
+                Context.Response.Headers["Location"] = Url.RouteUrl("Get", new { id = customer.Id }, Request.Scheme, Request.Host.ToUriComponent());
+                Context.Response.StatusCode = 201;
             }
-
-            RedirectToAction("Get", customer.Id);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var customer = _customerRespository.GetById(id);
+            var customer = _customerRespository.Get(id);
             if (customer == null)
             {
                 return HttpNotFound();
             }
 
-            _customerRespository.DeleteAsync(id);
+            _customerRespository.Delete(id);
 
-            return new HttpStatusCodeResult(204); // 201 No Content
+            return new HttpStatusCodeResult(204);
         }
     }
 }

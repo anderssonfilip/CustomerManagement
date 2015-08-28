@@ -1,7 +1,5 @@
 ﻿using CMService.Models;
-using CMService.Settings;
 using Entities;
-using Microsoft.Framework.OptionsModel;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,9 +10,9 @@ namespace CMService.DAL
     {
         private readonly CustomerDbContext _customerDbContext;
 
-        public CustomerRepository(IOptions<DbSetting> dbSettings)
+        public CustomerRepository(CustomerDbContext customerDbContext)
         {
-            _customerDbContext = new CustomerDbContext(dbSettings.Options.ConnectionString);
+            _customerDbContext = customerDbContext;
         }
 
         public IQueryable<Customer> All
@@ -25,12 +23,12 @@ namespace CMService.DAL
             }
         }
 
-        public Customer GetById(int id)
+        public Customer Get(int id)
         {
             return _customerDbContext.Customers.FirstOrDefault(x => x.Id == id);
         }
 
-        public Task<int> AddAsync(Customer customer)
+        public int Add(Customer customer)
         {
             _customerDbContext.Customers.Add(customer);
 
@@ -41,10 +39,10 @@ namespace CMService.DAL
                 Customer = customer
             });
 
-            return _customerDbContext.SaveChangesAsync();
+            return _customerDbContext.SaveChanges();
         }
 
-        public Task<int> UpdateAsync(Customer customer)
+        public int Update(Customer customer)
         {
             var persistedCustomer = _customerDbContext.Customers.FirstOrDefault(x => x.Id == customer.Id);
             if (persistedCustomer != null)
@@ -54,6 +52,7 @@ namespace CMService.DAL
                 persistedCustomer.Country = customer.Country;
                 persistedCustomer.DateOfBirth = customer.DateOfBirth;
                 persistedCustomer.Gender = customer.Gender;
+                persistedCustomer.HouseNumber = customer.HouseNumber;
                 persistedCustomer.Name = customer.Name;
                 persistedCustomer.State = customer.State;
 
@@ -64,14 +63,14 @@ namespace CMService.DAL
                     Customer = persistedCustomer
                 });
 
-                return _customerDbContext.SaveChangesAsync();
+                return _customerDbContext.SaveChanges();
             }
-            return new Task<int>(delegate { return 0; });
+            return 0;
         }
 
-        public Task<int> DeleteAsync(int id)
+        public int Delete(int id)
         {
-            var item = GetById(id);
+            var item = Get(id);
 
             _customerDbContext.CustomerUpdates.Add(new CustomerUpdate
             {
@@ -80,7 +79,22 @@ namespace CMService.DAL
                 Customer = item
             });
 
-            return _customerDbContext.SaveChangesAsync();
+            return _customerDbContext.SaveChanges();
+        }
+
+        public Task<int> AddAsync(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeleteAsync(Customer item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

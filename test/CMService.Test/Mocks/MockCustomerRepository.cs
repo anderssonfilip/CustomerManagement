@@ -34,7 +34,7 @@ namespace CMService.Test.Mocks
             return new Task<int>(delegate { return 1; });
         }
 
-        public Customer GetById(int id)
+        public Customer Get(int id)
         {
             return _items.FirstOrDefault(c => c.Id == id);
         }
@@ -68,6 +68,26 @@ namespace CMService.Test.Mocks
             });
 
             return new Task<int>(delegate { return 1; });
+        }
+
+        public int Add(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Update(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeleteAsync(Customer item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

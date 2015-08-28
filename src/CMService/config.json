@@ -1,9 +1,12 @@
 ﻿{
+  "Persistence": "SQL",
   "Data": {
-    "DefaultConnection": {
+    "SeedDataOnStartup": false,
+    "SQL": {
       "ConnectionString": "Data Source=localhost;Integrated Security=True;Connect Timeout=15;Database=cm;"
     },
-    "SeedDatabase": false
+    "Graph": {
+    }
   },
   "Client": {
     "URI": "http://localhost:53074"

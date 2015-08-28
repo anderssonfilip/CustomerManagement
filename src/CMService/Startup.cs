@@ -1,15 +1,14 @@
-﻿using CMService.Models;
+﻿using CMService.DAL;
 using CMService.Migrations;
+using CMService.Models;
 using CMService.Settings;
+using Entities;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Data.Entity;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Runtime;
-using System;
-using CMService.DAL;
-using Entities;
 
 namespace CMService
 {
@@ -22,8 +21,16 @@ namespace CMService
             configBuilder.AddEnvironmentVariables();
             Configuration = configBuilder.Build();
 
-            if (bool.Parse(Configuration["Data:SeedDatabase"])){
-                SeedCustomers.Seed(Configuration["Data:DefaultConnection:ConnectionString"]);
+            if (bool.Parse(Configuration["Data:SeedDataOnStartup"]))
+            {
+                if (Configuration.Get("Persistence").Equals("SQL"))
+                {
+                    SeedCustomers.Seed(Configuration["Data:SQL:ConnectionString"]);
+                }
+                else if (Configuration.Get("Persistence").Equals("Graph"))
+                {
+
+                }
             }
         }
 
@@ -37,12 +44,19 @@ namespace CMService
         // Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<DbSetting>(Configuration.GetConfigurationSection("Data:DefaultConnection"));
+            var persistence = Configuration.Get("Persistence");
 
-            services.AddEntityFramework().AddSqlServer().AddDbContext<CustomerDbContext>(
-                options => options.UseSqlServer(Configuration.Get("Data:DefaultConnection:ConnectionString")));
+            if (persistence.Equals("SQL"))
+            {
+                services.AddEntityFramework().AddSqlServer().AddDbContext<CustomerDbContext>(
+                    options => options.UseSqlServer(Configuration.Get("Data:SQL:ConnectionString")));
 
-            services.AddScoped<IRepository<Customer>, CustomerRepository>();
+                services.AddScoped<IRepository<Customer>, CustomerRepository>();
+            }
+            else if (persistence.Equals("Graph"))
+            {
+
+            }
 
             services.Configure<ClientSetting>(Configuration.GetConfigurationSection("Client"));
 
@@ -56,7 +70,7 @@ namespace CMService
         {
             app.UseMvc(routes =>
             {
-                 routes.MapRoute(name: "default", template: "api/{controller}/{action}/");
+                routes.MapRoute(name: "default", template: "api/{controller}/{action}/");
             });
 
             app.UseSwagger();

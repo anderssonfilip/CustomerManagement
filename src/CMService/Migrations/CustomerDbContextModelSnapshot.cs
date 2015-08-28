@@ -1,8 +1,8 @@
-using System;
+using CMService.Models;
 using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Metadata;
 using Microsoft.Data.Entity.Relational.Migrations.Infrastructure;
-using CMService.Models;
+using System;
 
 namespace CMService.Migrations
 {

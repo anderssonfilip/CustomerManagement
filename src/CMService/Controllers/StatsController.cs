@@ -1,5 +1,4 @@
 ﻿using CMService.DAL;
-using CMService.Models;
 using CMService.Settings;
 using Entities;
 using Microsoft.AspNet.Mvc;
