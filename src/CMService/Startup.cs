@@ -25,12 +25,13 @@ namespace CMService
             {
                 if (Configuration.Get("Persistence").Equals("SQL"))
                 {
-                    SeedCustomers.Seed(Configuration["Data:SQL:ConnectionString"]);
+                    SeedCustomers.SeedToMSSQL(Configuration["Data:SQL:ConnectionString"]);
                 }
                 else if (Configuration.Get("Persistence").Equals("Graph"))
                 {
-
+                    SeedCustomers.SeedToNeo4j(Configuration["Data:Graph:ConnectionString"]);
                 }
+
             }
         }
 

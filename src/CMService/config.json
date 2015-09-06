@@ -1,11 +1,12 @@
 ﻿{
-  "Persistence": "SQL",
+  "Persistence": "Graph",
   "Data": {
-    "SeedDataOnStartup": false,
+    "SeedDataOnStartup": true,
     "SQL": {
       "ConnectionString": "Data Source=localhost;Integrated Security=True;Connect Timeout=15;Database=cm;"
     },
     "Graph": {
+      "ConnectionString": "http://neo4j:andersson@localhost:7474/db/data"
     }
   },
   "Client": {
