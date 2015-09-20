@@ -1,7 +1,7 @@
 ﻿{
   "Persistence": "Graph",
   "Data": {
-    "SeedDataOnStartup": true,
+    "SeedDataOnStartup": false,
     "SQL": {
       "ConnectionString": "Data Source=localhost;Integrated Security=True;Connect Timeout=15;Database=cm;"
     },

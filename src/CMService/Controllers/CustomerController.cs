@@ -2,6 +2,7 @@
 using CMService.Search;
 using Entities;
 using Microsoft.AspNet.Mvc;
+using Neo4jClient;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,10 +29,20 @@ namespace CMService.Controllers
             // Self referencing loop detected for property 'Customer' with type 'Entities.Customer'.Path 'CustomerUpdates[0]'
             // at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.CheckForCircularReference(JsonWriter writer, Object value, JsonProperty property, JsonContract contract, JsonContainerContract containerContract, JsonProperty containerProperty)
 
-            var customer = _customerRespository.All/*.Include(c => c.CustomerUpdates)*/.FirstOrDefault(c => c.Id == id);
-            var json = Json(customer);
-
-            return json;
+            if (_customerRespository.Persistence == Persistence.SQL)
+            {
+                var customer = _customerRespository.All/*.Include(c => c.CustomerUpdates)*/.FirstOrDefault(c => c.Id == id);
+                var json = Json(customer);
+                return json;
+            }
+            else if (_customerRespository.Persistence == Persistence.Graph)
+            {
+                return null;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         [HttpGet("{customerName}")]
@@ -44,9 +55,22 @@ namespace CMService.Controllers
 
             var search = new CustomerSearch(new LevenshteinDistance());
 
-            foreach (var match in search.FindClosestMatches(customerName, _customerRespository.All.Select(i => i.Name), 5))
+            IEnumerable<KeyValuePair<int, string>> values = new List<KeyValuePair<int, string>>();
+            if (_customerRespository.Persistence == Persistence.SQL)
             {
-                yield return (new KeyValuePair<int, string>(_customerRespository.All.First(c => c.Name == match).Id, match));
+                values = _customerRespository.All.Select(i => new KeyValuePair<int, string>(i.Id, i.Name)).ToList();
+            }
+            else if (_customerRespository.Persistence == Persistence.Graph)
+            {
+                var graph = _customerRespository.GraphClient;
+
+                values = graph.Cypher.Match("(p:Person)").Return(p => p.As<CustomerGraph.Node>()).Results
+                              .Select(p => new KeyValuePair<int, string>((int)p.id, p.name));
+            }
+
+            foreach (var match in search.FindClosestMatches(customerName, values.Select(i => i.Value), 5))
+            {
+                yield return (new KeyValuePair<int, string>(values.First(c => c.Value == match).Key, match));
             }
         }
 

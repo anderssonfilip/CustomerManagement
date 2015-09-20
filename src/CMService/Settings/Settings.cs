@@ -4,4 +4,9 @@
     {
         public string URI { get; set; }
     }
+
+    public class GraphSetting
+    {
+        public string ConnectionString { get; set; }
+    }
 }

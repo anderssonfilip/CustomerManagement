@@ -15,6 +15,7 @@ namespace CMService.Controllers
     public class StatsController : Controller
     {
         private readonly IRepository<Customer> _customerRespository;
+
         private readonly string _accessControlAllowOriginURI;
 
         public StatsController(IRepository<Customer> customerRepository, IOptions<ClientSetting> clientSetting)
@@ -29,7 +30,17 @@ namespace CMService.Controllers
         {
             Context.Response.Headers["Access-Control-Allow-Origin"] = _accessControlAllowOriginURI;
 
-            var categories = QueryCategories().ToArray();
+            var categories = new List<object>();
+
+            if (_customerRespository.Persistence  == Persistence.SQL)
+            {
+                categories = QueryCategories().ToList();
+            }
+            else if (_customerRespository.Persistence == Persistence.Graph)
+            {
+                categories = _customerRespository.MatchCategories.ToList();
+            }
+
             return Json(categories);
         }
 
@@ -39,7 +50,17 @@ namespace CMService.Controllers
         {
             Context.Response.Headers["Access-Control-Allow-Origin"] = _accessControlAllowOriginURI;
 
-            var locations = QueryLocations().ToArray();
+            var locations = new List<object>();
+
+            if (_customerRespository.Persistence == Persistence.SQL)
+            {
+                locations = QueryLocations().ToList();
+            }
+            else if (_customerRespository.Persistence == Persistence.Graph)
+            {
+                locations = _customerRespository.MatchLocations.ToList();
+            }
+
             return Json(locations);
         }
 

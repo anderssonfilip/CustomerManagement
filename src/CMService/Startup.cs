@@ -6,9 +6,9 @@ using Entities;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Data.Entity;
+using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.Runtime;
 
 namespace CMService
 {
@@ -23,15 +23,14 @@ namespace CMService
 
             if (bool.Parse(Configuration["Data:SeedDataOnStartup"]))
             {
-                if (Configuration.Get("Persistence").Equals("SQL"))
+                if (Configuration.GetSection("Persistence").Value.Equals("SQL"))
                 {
                     SeedCustomers.SeedToMSSQL(Configuration["Data:SQL:ConnectionString"]);
                 }
-                else if (Configuration.Get("Persistence").Equals("Graph"))
+                else if (Configuration.GetSection("Persistence").Value.Equals("Graph"))
                 {
                     SeedCustomers.SeedToNeo4j(Configuration["Data:Graph:ConnectionString"]);
                 }
-
             }
         }
 
@@ -45,21 +44,22 @@ namespace CMService
         // Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            var persistence = Configuration.Get("Persistence");
+            var persistence = Configuration.GetSection("Persistence").Value;
 
             if (persistence.Equals("SQL"))
             {
                 services.AddEntityFramework().AddSqlServer().AddDbContext<CustomerDbContext>(
-                    options => options.UseSqlServer(Configuration.Get("Data:SQL:ConnectionString")));
+                    options => options.UseSqlServer(Configuration.GetSection("Data:SQL:ConnectionString").Value));
 
                 services.AddScoped<IRepository<Customer>, CustomerRepository>();
             }
             else if (persistence.Equals("Graph"))
             {
-
+                services.Configure<GraphSetting>(Configuration.GetSection("Data:Graph"));
+                services.AddScoped<IRepository<Customer>, CustomerGraph>();
             }
 
-            services.Configure<ClientSetting>(Configuration.GetConfigurationSection("Client"));
+            services.Configure<ClientSetting>(Configuration.GetSection("Client"));
 
             services.AddMvc();
 

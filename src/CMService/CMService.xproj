@@ -15,5 +15,6 @@
     <SchemaVersion>2.0</SchemaVersion>
     <DevelopmentServerPort>52988</DevelopmentServerPort>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

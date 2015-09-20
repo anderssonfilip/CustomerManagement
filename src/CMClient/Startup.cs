@@ -1,9 +1,9 @@
 ﻿using CMClient.Settings;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.Runtime;
 
 namespace CMClient
 {
@@ -25,7 +25,7 @@ namespace CMClient
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ServiceSetting>(Configuration.GetConfigurationSection("Service"));
+            services.Configure<ServiceSetting>(Configuration.GetSection("Service"));
 
             services.AddMvc();
         }

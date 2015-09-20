@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Neo4jClient;
 
 namespace CMService.Test.Mocks
 {
@@ -20,6 +21,19 @@ namespace CMService.Test.Mocks
             }
         }
 
+        public Persistence Persistence
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int Add(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<int> AddAsync(Customer item)
         {
             _items.Add(item);
@@ -34,14 +48,14 @@ namespace CMService.Test.Mocks
             return new Task<int>(delegate { return 1; });
         }
 
-        public Customer Get(int id)
+        public int Delete(int id)
         {
-            return _items.FirstOrDefault(c => c.Id == id);
+            throw new NotImplementedException();
         }
 
-        public Task<int> DeleteAsync(int id)
+        public Task<int> DeleteAsync(Customer item)
         {
-            var item = _items.FirstOrDefault(c => c.Id == id);
+            var dbItem = _items.FirstOrDefault(c => c.Id == item.Id);
             if (item != null)
             {
                 item.CustomerUpdates.Add(new CustomerUpdate
@@ -53,6 +67,11 @@ namespace CMService.Test.Mocks
             }
 
             return new Task<int>(delegate { return 1; });
+        }
+
+        public Customer Get(int id)
+        {
+            return _items.FirstOrDefault(c => c.Id == id);
         }
 
         public Task<int> UpdateAsync(Customer item)
@@ -70,24 +89,33 @@ namespace CMService.Test.Mocks
             return new Task<int>(delegate { return 1; });
         }
 
-        public int Add(Customer item)
-        {
-            throw new NotImplementedException();
-        }
-
         public int Update(Customer item)
         {
             throw new NotImplementedException();
         }
 
-        public int Delete(int id)
+        public IEnumerable<object> MatchCategories
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        public Task<int> DeleteAsync(Customer item)
+        public IEnumerable<object> MatchLocations
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IGraphClient GraphClient
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

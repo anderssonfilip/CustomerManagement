@@ -35,7 +35,7 @@ namespace CMService.Models
         public DbSet<CustomerUpdate> CustomerUpdates { get; set; }
 
 
-        protected override void OnConfiguring(EntityOptionsBuilder options)
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!string.IsNullOrEmpty(_connectionString))
                 options.UseSqlServer(_connectionString);

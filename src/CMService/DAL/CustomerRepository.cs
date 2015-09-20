@@ -3,6 +3,8 @@ using Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Neo4jClient;
 
 namespace CMService.DAL
 {
@@ -23,9 +25,12 @@ namespace CMService.DAL
             }
         }
 
-        public Customer Get(int id)
+        public Persistence Persistence
         {
-            return _customerDbContext.Customers.FirstOrDefault(x => x.Id == id);
+            get
+            {
+                return Persistence.SQL;
+            }
         }
 
         public int Add(Customer customer)
@@ -40,6 +45,35 @@ namespace CMService.DAL
             });
 
             return _customerDbContext.SaveChanges();
+        }
+
+        public Task<int> AddAsync(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Delete(int id)
+        {
+            var item = Get(id);
+
+            _customerDbContext.CustomerUpdates.Add(new CustomerUpdate
+            {
+                Type = UpdateType.Remove.ToString(),
+                Timestamp = DateTime.Now,
+                Customer = item
+            });
+
+            return _customerDbContext.SaveChanges();
+        }
+
+        public Task<int> DeleteAsync(Customer item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Customer Get(int id)
+        {
+            return _customerDbContext.Customers.FirstOrDefault(x => x.Id == id);
         }
 
         public int Update(Customer customer)
@@ -68,33 +102,33 @@ namespace CMService.DAL
             return 0;
         }
 
-        public int Delete(int id)
-        {
-            var item = Get(id);
-
-            _customerDbContext.CustomerUpdates.Add(new CustomerUpdate
-            {
-                Type = UpdateType.Remove.ToString(),
-                Timestamp = DateTime.Now,
-                Customer = item
-            });
-
-            return _customerDbContext.SaveChanges();
-        }
-
-        public Task<int> AddAsync(Customer item)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<int> UpdateAsync(Customer item)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> DeleteAsync(Customer item)
+        public IEnumerable<object> MatchCategories
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IEnumerable<object> MatchLocations
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IGraphClient GraphClient
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
