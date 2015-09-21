@@ -115,6 +115,12 @@ namespace CMClient.Controllers
         [HttpPost]
         public IActionResult Delete(Customer customer)
         {
+            if (customer.Id == 0)
+            {
+                var referer = Context.Request.Headers["Referer"];
+                customer.Id = int.Parse(referer.Substring(referer.LastIndexOf('/') + 1));
+            }
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceSetting.URI + "customer/" + customer.Id);
             request.Method = "DELETE";
 

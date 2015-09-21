@@ -38,6 +38,8 @@ namespace CMClient
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Customer", action = "Search"  });
             });
+
+            app.UseStaticFiles();
         }
     }
 }

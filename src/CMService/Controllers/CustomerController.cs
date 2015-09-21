@@ -2,7 +2,6 @@
 using CMService.Search;
 using Entities;
 using Microsoft.AspNet.Mvc;
-using Neo4jClient;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,20 +28,12 @@ namespace CMService.Controllers
             // Self referencing loop detected for property 'Customer' with type 'Entities.Customer'.Path 'CustomerUpdates[0]'
             // at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.CheckForCircularReference(JsonWriter writer, Object value, JsonProperty property, JsonContract contract, JsonContainerContract containerContract, JsonProperty containerProperty)
 
-            if (_customerRespository.Persistence == Persistence.SQL)
-            {
-                var customer = _customerRespository.All/*.Include(c => c.CustomerUpdates)*/.FirstOrDefault(c => c.Id == id);
-                var json = Json(customer);
-                return json;
-            }
-            else if (_customerRespository.Persistence == Persistence.Graph)
-            {
-                return null;
-            }
+            Customer customer = _customerRespository.Get(id);
+
+            if (customer != null)
+                return Json(customer);
             else
-            {
-                return null;
-            }
+                return new HttpStatusCodeResult(204);
         }
 
         [HttpGet("{customerName}")]
@@ -64,8 +55,8 @@ namespace CMService.Controllers
             {
                 var graph = _customerRespository.GraphClient;
 
-                values = graph.Cypher.Match("(p:Person)").Return(p => p.As<CustomerGraph.Node>()).Results
-                              .Select(p => new KeyValuePair<int, string>((int)p.id, p.name));
+                values = graph.Cypher.Match("(p:Customer)").Return(p => p.As<CustomerGraph.Node>()).Results
+                                     .Select(p => new KeyValuePair<int, string>((int)p.Id, p.Name));
             }
 
             foreach (var match in search.FindClosestMatches(customerName, values.Select(i => i.Value), 5))
@@ -83,8 +74,8 @@ namespace CMService.Controllers
             }
             else
             {
-                var url = customer.Id == 0 ? _customerRespository.Add(customer) : _customerRespository.Update(customer);
-                Context.Response.Headers["Location"] = Url.RouteUrl("Get", new { id = customer.Id }, Request.Scheme, Request.Host.ToUriComponent());
+                var id = customer.Id == 0 ? _customerRespository.Add(customer) : _customerRespository.Update(customer);
+                Context.Response.Headers["Location"] = Url.RouteUrl("Get", new { id = id }, Request.Scheme, Request.Host.ToUriComponent());
                 Context.Response.StatusCode = 201;
             }
         }
@@ -92,12 +83,6 @@ namespace CMService.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var customer = _customerRespository.Get(id);
-            if (customer == null)
-            {
-                return HttpNotFound();
-            }
-
             _customerRespository.Delete(id);
 
             return new HttpStatusCodeResult(204);

@@ -14,8 +14,8 @@ namespace CMService.DAL
     {
         public class Node
         {
-            public uint id { get; set; }
-            public string name { get; set; }
+            public uint Id { get; set; }
+            public string Name { get; set; }
         }
 
         private readonly string _connectionString;
@@ -35,7 +35,7 @@ namespace CMService.DAL
 
                     return null;
 
-                    //return client.Cypher.Match("(p:Person)").Return<object>("p").Results.AsQueryable();
+                    //return client.Cypher.Match("(p:Customer)").Return<object>("p").Results.AsQueryable();
                 }
             }
         }
@@ -50,7 +50,14 @@ namespace CMService.DAL
 
         public int Add(Customer item)
         {
-            throw new NotImplementedException();
+            item.Id = 1 + GraphClient.Cypher.Match("(c:Customer)")
+                                            .Return<int>("Max(c.Id)").Results.FirstOrDefault();
+
+            var neo4JQueries = new Neo4JQueries(GraphClient);
+            neo4JQueries.MergeNodes(item);
+            neo4JQueries.CreateRelationships(item);
+
+            return item.Id;
         }
 
         public Task<int> AddAsync(Customer item)
@@ -60,7 +67,10 @@ namespace CMService.DAL
 
         public int Delete(int id)
         {
-            throw new NotImplementedException();
+            GraphClient.Cypher.Match(string.Format("(c: Customer{{ Id: {0} }})-[r]-()", id))
+                              .Delete("c,r").ExecuteWithoutResults();
+
+            return id;
         }
 
         public Task<int> DeleteAsync(Customer item)
@@ -70,7 +80,8 @@ namespace CMService.DAL
 
         public Customer Get(int id)
         {
-            throw new NotImplementedException();
+            return GraphClient.Cypher.Match("(c:Customer)").Where((Customer c) => c.Id == id)
+                                                           .Return(c => c.As<Customer>()).Results.FirstOrDefault();
         }
 
         public IGraphClient GraphClient
@@ -91,8 +102,8 @@ namespace CMService.DAL
                 {
                     client.Connect();
 
-                    return client.Cypher.Match("(c:Category)<-[:IS_CATEGORY]-(p:Person)")
-                                        .Return((c, p) => new { name = c.As<Node>().name, y = p.Count() })
+                    return client.Cypher.Match("(c:Category)<-[:IS_CATEGORY]-(p:Customer)")
+                                        .Return((c, p) => new { name = c.As<Node>().Name, y = p.Count() })
                                         .Results;
                 }
             }
@@ -106,8 +117,8 @@ namespace CMService.DAL
                 {
                     client.Connect();
 
-                    return client.Cypher.Match("(s:State)<-[:LIVES_IN_STATE]-(p:Person)")
-                                        .Return((s, p) => new { name = s.As<Node>().name, y = p.Count() })
+                    return client.Cypher.Match("(s:State)<-[:LIVES_IN_STATE]-(p:Customer)")
+                                        .Return((s, p) => new { name = s.As<Node>().Name, y = p.Count() })
                                         .Results;
                 }
             }
@@ -115,7 +126,14 @@ namespace CMService.DAL
 
         public int Update(Customer item)
         {
-            throw new NotImplementedException();
+            item.Id = 1 + GraphClient.Cypher.Match("(c:Customer)")
+                                            .Return<int>("Max(c.Id)").Results.FirstOrDefault();
+
+            var neo4JQueries = new Neo4JQueries(GraphClient);
+            neo4JQueries.CreateNodes(item);
+            neo4JQueries.CreateRelationships(item);
+
+            return item.Id;
         }
 
         public Task<int> UpdateAsync(Customer item)

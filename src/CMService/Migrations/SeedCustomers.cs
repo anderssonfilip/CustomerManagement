@@ -1,4 +1,5 @@
-﻿using CMService.Models;
+﻿using CMService.DAL;
+using CMService.Models;
 using Entities;
 using Neo4jClient;
 using System;
@@ -12,6 +13,7 @@ namespace CMService.Migrations
     public class SeedCustomers
     {
         private const string dataURL = "https://docs.google.com/spreadsheets/d/1UZQLqByd8AZR3wM5Cb0qmX_0eScrwfwee3iAONk3O5A/export?format=csv";
+
         private static readonly Regex csvRegex = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
 
         internal static void SeedToMSSQL(string connectionString)
@@ -60,19 +62,19 @@ namespace CMService.Migrations
             {
                 client.Connect();
 
-                client.Cypher.DropUniqueConstraint("g:Gender", "g.name").ExecuteWithoutResults();
-                client.Cypher.DropUniqueConstraint("a:Address", "a.name").ExecuteWithoutResults();
-                client.Cypher.DropUniqueConstraint("s:State", "s.name").ExecuteWithoutResults();
-                client.Cypher.DropUniqueConstraint("c:Country", "c.name").ExecuteWithoutResults();
-                client.Cypher.DropUniqueConstraint("cat:Category", "cat.name").ExecuteWithoutResults();
+                client.Cypher.DropUniqueConstraint("g:Gender", "g.Name").ExecuteWithoutResults();
+                client.Cypher.DropUniqueConstraint("a:Address", "a.Name").ExecuteWithoutResults();
+                client.Cypher.DropUniqueConstraint("s:State", "s.Name").ExecuteWithoutResults();
+                client.Cypher.DropUniqueConstraint("c:Country", "c.Name").ExecuteWithoutResults();
+                client.Cypher.DropUniqueConstraint("cat:Category", "cat.Name").ExecuteWithoutResults();
 
                 client.Cypher.Match("n").OptionalMatch("(n) -[r] - ()").Delete("n, r").ExecuteWithoutResults();
 
-                client.Cypher.CreateUniqueConstraint("g:Gender", "g.name").ExecuteWithoutResults();
-                client.Cypher.CreateUniqueConstraint("a:Address", "a.name").ExecuteWithoutResults();
-                client.Cypher.CreateUniqueConstraint("s:State", "s.name").ExecuteWithoutResults();
-                client.Cypher.CreateUniqueConstraint("c:Country", "c.name").ExecuteWithoutResults();
-                client.Cypher.CreateUniqueConstraint("cat:Category", "cat.name").ExecuteWithoutResults();
+                client.Cypher.CreateUniqueConstraint("g:Gender", "g.Name").ExecuteWithoutResults();
+                client.Cypher.CreateUniqueConstraint("a:Address", "a.Name").ExecuteWithoutResults();
+                client.Cypher.CreateUniqueConstraint("s:State", "s.Name").ExecuteWithoutResults();
+                client.Cypher.CreateUniqueConstraint("c:Country", "c.Name").ExecuteWithoutResults();
+                client.Cypher.CreateUniqueConstraint("cat:Category", "cat.Name").ExecuteWithoutResults();
 
                 var customers = new List<Customer>();
 
@@ -82,6 +84,7 @@ namespace CMService.Migrations
                 {
                     var line = sr.ReadLine();
 
+                    var id = 1;
                     while (line != null)
                     {
                         line = sr.ReadLine(); // skip the header line
@@ -91,19 +94,21 @@ namespace CMService.Migrations
 
                         var fields = csvRegex.Split(line);
 
-                        customers.Add(ReadCustomer(fields));
+                        customers.Add(ReadCustomer(fields, id++));
                     }
                 }
 
-                customers.ForEach(c => CreateNodes(client, c));
-                customers.ForEach(c => CreateRelationships(client,c));
+                var neo4JQueries = new Neo4JQueries(client);
+                customers.ForEach(c => neo4JQueries.CreateNodes(c));
+                customers.ForEach(c => neo4JQueries.CreateRelationships(c));
             }
         }
 
-        private static Customer ReadCustomer(string[] fields)
+        private static Customer ReadCustomer(string[] fields, int id = 0)
         {
             return new Customer
             {
+                Id = id,
                 Name = fields[0].Trim(' ', '"').Replace("'", "\\'"),
                 Gender = fields[1].Trim(' ', '"'),
                 HouseNumber = int.Parse(fields[2].Trim(' ', '"')),
@@ -113,35 +118,6 @@ namespace CMService.Migrations
                 Category = fields[6].Trim(' ', '"').Split(' ')[1],
                 DateOfBirth = DateTime.Parse(fields[7].Trim(' ', '"'))
             };
-        }
-
-        private static void CreateNodes(GraphClient client, Customer customer)
-        {
-            var query = client.Cypher.Create(string.Format("(p: Person {{ name: '{0}', HouseNumber: '{1}', DateOfBirth: '{2}'}})", customer.Name, customer.HouseNumber, customer.DateOfBirth.ToString("yyyy-MM-dd")))
-                                     .Merge(string.Format("(g: Gender {{ name: '{0}'}})", customer.Gender))
-                                     .Merge(string.Format("(a: Address {{ name: '{0}'}})", customer.AddressLine1))
-                                     .Merge(string.Format("(s: State {{ name: '{0}'}})", customer.State))
-                                     .Merge(string.Format("(c: Country {{ name: '{0}'}})", customer.Country))
-                                     .Merge(string.Format("(cat: Category {{ name: '{0}'}})", customer.Category));
-
-            query.ExecuteWithoutResults();
-        }
-
-        private static void CreateRelationships(GraphClient client, Customer customer)
-        {
-            var query = client.Cypher.Match(string.Format("(p: Person {{ name: '{0}', HouseNumber: '{1}', DateOfBirth: '{2}'}})", customer.Name, customer.HouseNumber, customer.DateOfBirth.ToString("yyyy-MM-dd")))
-                                     .Match(string.Format("(g: Gender {{ name: '{0}'}})", customer.Gender))
-                                     .Match(string.Format("(a: Address {{ name: '{0}'}})", customer.AddressLine1))
-                                     .Match(string.Format("(s: State {{ name: '{0}'}})", customer.State))
-                                     .Match(string.Format("(c: Country {{ name: '{0}'}})", customer.Country))
-                                     .Match(string.Format("(cat: Category {{ name: '{0}'}})", customer.Category))
-                                     .Merge("(p)-[:IS_GENDER]->(g)")
-                                     .Merge("(p)-[:LIVES_ON_ADDRESS]->(a)")
-                                     .Merge("(p)-[:LIVES_IN_STATE]->(s)")
-                                     .Merge("(p)-[:LIVES_IN_COUNTRY]->(c)")
-                                     .Merge("(p)-[:IS_CATEGORY]->(cat)");
-
-            query.ExecuteWithoutResults();
         }
     }
 }

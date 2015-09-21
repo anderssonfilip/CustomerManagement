@@ -5,6 +5,7 @@ using CMService.Settings;
 using Entities;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.StaticFiles;
 using Microsoft.Data.Entity;
 using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
@@ -73,6 +74,11 @@ namespace CMService
             {
                 routes.MapRoute(name: "default", template: "api/{controller}/{action}/");
             });
+
+            //if (bool.Parse(Configuration["Data:SeedDataOnStartup"]))
+            //{
+            //    app.UseStaticFiles();  // Serve the SampleData.csv file
+            //}
 
             app.UseSwagger();
             app.UseSwaggerUi();
