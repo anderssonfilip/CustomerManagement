@@ -15,9 +15,6 @@
           "Microsoft.Framework.Configuration.Json": "1.0.0-beta7",
           "Microsoft.Framework.Logging.Console": "1.0.0-beta7",
           "Microsoft.Framework.OptionsModel": "1.0.0-beta7",
-          "Nancy": "1.2.0",
-          "Nancy.Hosting.Aspnet": "1.2.0",
-          "Nancy.Owin": "1.2.0",
           "Neo4jClient": "1.1.0.8",
           "Swashbuckle": "6.0.0-beta6"
         }
@@ -1589,40 +1586,6 @@
           "lib/dnx451/Microsoft.Net.WebSockets.dll": {}
         }
       },
-      "Nancy/1.2.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Nancy.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Nancy.dll": {}
-        }
-      },
-      "Nancy.Hosting.Aspnet/1.2.0": {
-        "type": "package",
-        "dependencies": {
-          "Nancy": "1.2.0"
-        },
-        "compile": {
-          "lib/net40/Nancy.Hosting.Aspnet.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Nancy.Hosting.Aspnet.dll": {}
-        }
-      },
-      "Nancy.Owin/1.2.0": {
-        "type": "package",
-        "dependencies": {
-          "Nancy": "1.2.0",
-          "OWIN": "1.0"
-        },
-        "compile": {
-          "lib/net40/Nancy.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Nancy.Owin.dll": {}
-        }
-      },
       "Neo4jClient/1.1.0.8": {
         "type": "package",
         "dependencies": {
@@ -1643,15 +1606,6 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      },
-      "OWIN/1.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Owin.dll": {}
         }
       },
       "Remotion.Linq/2.0.0-beta-002": {
@@ -3136,40 +3090,6 @@
         "Microsoft.Net.WebSockets.nuspec"
       ]
     },
-    "Nancy/1.2.0": {
-      "type": "package",
-      "sha512": "Mqx3wU0BoTbh8sV5YL1i+DMxJjOu/KXOrMn1POqEgI92QUpkjXMwwQVi//4BJRGrkuF4uGNjqZMF+LBya5h7mA==",
-      "files": [
-        "lib/net40/Nancy.dll",
-        "lib/net40/Nancy.xml",
-        "Nancy.1.2.0.nupkg",
-        "Nancy.1.2.0.nupkg.sha512",
-        "Nancy.nuspec"
-      ]
-    },
-    "Nancy.Hosting.Aspnet/1.2.0": {
-      "type": "package",
-      "sha512": "zhZIfSp0smZ2xDxhDspll5tkxTskJAwi1lvud1XyTDKu1jqML4CF/PyfToauhOdPVFe1M8kZukBNWuA5ZG8U9Q==",
-      "files": [
-        "content/web.config.transform",
-        "lib/net40/Nancy.Hosting.Aspnet.dll",
-        "lib/net40/Nancy.Hosting.Aspnet.xml",
-        "Nancy.Hosting.Aspnet.1.2.0.nupkg",
-        "Nancy.Hosting.Aspnet.1.2.0.nupkg.sha512",
-        "Nancy.Hosting.Aspnet.nuspec"
-      ]
-    },
-    "Nancy.Owin/1.2.0": {
-      "type": "package",
-      "sha512": "+BcOGhOCMFXnUBW4vlxgvxNs9PHdK53M+Zc4wHCWkfJ4hvn80trwA2sqbphvANKL/Qdgofwz3xsVVET1Qd2xJQ==",
-      "files": [
-        "lib/net40/Nancy.Owin.dll",
-        "lib/net40/Nancy.Owin.XML",
-        "Nancy.Owin.1.2.0.nupkg",
-        "Nancy.Owin.1.2.0.nupkg.sha512",
-        "Nancy.Owin.nuspec"
-      ]
-    },
     "Neo4jClient/1.1.0.8": {
       "type": "package",
       "sha512": "3Vy2GUYkKFiAy2VioiX8ilXJCPlp0T4Opkkmof5HM7FbRxn8CNQ7JydIxGThO/ejTK9JNhmLkJclBXtCwW3y3w==",
@@ -3204,16 +3124,6 @@
         "Newtonsoft.Json.6.0.6.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
-      ]
-    },
-    "OWIN/1.0": {
-      "type": "package",
-      "sha512": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw==",
-      "files": [
-        "lib/net40/Owin.dll",
-        "OWIN.1.0.0.nupkg",
-        "OWIN.1.0.0.nupkg.sha512",
-        "OWIN.nuspec"
       ]
     },
     "Remotion.Linq/2.0.0-beta-002": {

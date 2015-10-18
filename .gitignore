@@ -1,1 +1,6 @@
 artifacts/*
+.vs/CM/v14/.suo
+*.suo
+src/CMClient/wwwroot/bin/AspNet.Loader.dll
+src/CMClient/wwwroot/bin/AspNet.Loader.dll
+*.dll

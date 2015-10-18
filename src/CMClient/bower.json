@@ -1,11 +1,12 @@
 {
-    "name": "CMClient",
-    "private": true,
-    "dependencies": {
-        "jquery": "2.1.4",
-        "bootstrap": "3.3.5",
-        "jquery-validation": "1.11.1",
-        "jquery-validation-unobtrusive": "3.2.2",
-        "highcharts-release": "4.1.7"
-    }
+  "name": "CMClient",
+  "private": true,
+  "dependencies": {
+    "jquery": "2.1.4",
+    "bootstrap": "3.3.5",
+    "jquery-validation": "1.11.1",
+    "jquery-validation-unobtrusive": "3.2.2",
+    "highcharts-release": "4.1.7",
+    "knockout": "3.3.0"
+  }
 }

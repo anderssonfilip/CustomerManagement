@@ -14,4 +14,7 @@
         form.submit();
     });
 
+    //Activate Knockout
+    ko.applyBindings(myViewModel);
+
 });

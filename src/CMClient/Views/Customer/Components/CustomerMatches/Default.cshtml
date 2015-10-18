@@ -1,0 +1,13 @@
+﻿@model CMClient.Settings.ServiceSetting
+
+<input type="hidden" value="@Model.URI" id="serviceURI" />
+
+<span data-bind="text: description"></span>
+
+<script type="text/javascript">
+
+    var myViewModel = {
+        description: 'Customer matching is coming. By default a customer is matched on all node properties and relationships. Filters will be unchecked to remove constrains on the matching. Presented as tabular and graph, similar to to Neo4j web gui',
+    };
+
+</script>

@@ -1,9 +1,10 @@
 {
-    "version": "1.0.0",
-    "name": "CMClient",
-    "private": true,
-    "devDependencies": {
-        "gulp": "3.9.0",
-        "bower": "1.4.1"
-    }
+  "version": "1.0.0",
+  "name": "CMClient",
+  "private": true,
+  "devDependencies": {
+    "gulp": "3.9.0",
+    "bower": "1.4.1",
+    "tsd": "0.6.5"
+  }
 }
